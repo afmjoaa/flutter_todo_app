@@ -16,4 +16,9 @@ class Todos {
   bool isDone;
 
   Todos(this.task, this.isDone);
+
+  @override
+  String toString() {
+    return "task is $task and isDone is $isDone";
+  }
 }

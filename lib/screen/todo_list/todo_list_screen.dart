@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_app/inherited_widget/todo_inherited_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
 import 'package:flutter_todo_app/screen/todo_detail/todo_detail_screen.dart';
-import 'package:flutter_todo_app/shared/todo_data_container.dart';
 
 class TodoListScreen extends StatefulWidget {
   static const String path = '/todo_list';
@@ -15,7 +13,6 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -23,6 +20,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple.shade600,
@@ -35,19 +33,18 @@ class _TodoListScreenState extends State<TodoListScreen> {
           bottom: Radius.circular(20),
         )),
       ),
-      body: StreamBuilder<List<Todos>>(
-        stream: TodoInheritedWidget.of(context).todoStreamController.stream,
-        builder: (context, snapshot) {
+      body: BlocBuilder<TodoListCubit, TodoListState>(
+        builder: (context, state) {
           return ListView.builder(
-            itemCount: snapshot.data?.length,
+            itemCount: state.dataContainer.todos.length,
             itemBuilder: (context, index) {
               return ListTile(
                 title: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
-                    snapshot.data![index].task,
+                    state.dataContainer.todos[index].task,
                     style: TextStyle(
-                        decoration: snapshot.data![index].isDone
+                        decoration: state.dataContainer.todos[index].isDone
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
                         fontSize: 16,
@@ -58,26 +55,27 @@ class _TodoListScreenState extends State<TodoListScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (snapshot.data![index].isDone)
-                      IconButton(
-                        onPressed: () {
-                          _deleteTask(index, snapshot.data!);
-                        },
-                        icon: Icon(Icons.delete),
-                      ),
-                    if (!snapshot.data![index].isDone)
-                      IconButton(
-                        onPressed: () {
-                          _markTaskAsComplete(index, snapshot.data!);
-                        },
-                        icon: Icon(Icons.check),
-                      ),
+                    state.dataContainer.todos[index].isDone
+                        ? IconButton(
+                            onPressed: () {
+                              todoListCubit.deleteTask(index);
+                              // _deleteTask(index, state.dataContainer.todos, todoListCubit);
+                            },
+                            icon: Icon(Icons.delete),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              todoListCubit.markTaskAsComplete(index);
+                            },
+                            icon: Icon(Icons.check),
+                          ),
                     SizedBox(
                       width: 10,
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, TodoDetailScreen.path, arguments: index);
+                        Navigator.pushNamed(context, TodoDetailScreen.path,
+                            arguments: index);
                       },
                       icon: Icon(Icons.edit),
                     )
@@ -86,19 +84,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
               );
             },
           );
-        }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // todoBloc.add(TodoEvent.add);
+        },
+        child: Icon(Icons.add),
       ),
     );
-  }
-
-  void _markTaskAsComplete(int index, List<Todos> todos) {
-    todos[index].isDone = true;
-    TodoInheritedWidget.of(context).todoStreamController.sink.add(todos);
-  }
-
-  void _deleteTask(int index, List<Todos> todos) {
-    todos.removeAt(index);
-    TodoInheritedWidget.of(context).todoStreamController.sink.add(todos);
   }
 
   @override
