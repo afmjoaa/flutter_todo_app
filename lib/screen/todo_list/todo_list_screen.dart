@@ -36,15 +36,15 @@ class _TodoListScreenState extends State<TodoListScreen> {
       body: BlocBuilder<TodoListCubit, TodoListState>(
         builder: (context, state) {
           return ListView.builder(
-            itemCount: state.dataContainer.todos.length,
+            itemCount: state.todos.length,
             itemBuilder: (context, index) {
               return ListTile(
                 title: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
-                    state.dataContainer.todos[index].task,
+                    state.todos[index].task,
                     style: TextStyle(
-                        decoration: state.dataContainer.todos[index].isDone
+                        decoration: state.todos[index].isDone
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
                         fontSize: 16,
@@ -55,7 +55,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    state.dataContainer.todos[index].isDone
+                    state.todos[index].isDone
                         ? IconButton(
                             onPressed: () {
                               todoListCubit.deleteTask(index);

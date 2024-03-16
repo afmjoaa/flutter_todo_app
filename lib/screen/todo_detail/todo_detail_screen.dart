@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
-import 'package:flutter_todo_app/shared/todo_data_container.dart';
+import 'package:flutter_todo_app/model/todo_model.dart';
 
 class TodoDetailScreen extends StatefulWidget {
   static const String path = '/todo_detail';
@@ -47,7 +47,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Current task: ${todoListCubit.state.dataContainer.todos[widget.index].task}',
+              'Current task: ${todoListCubit.state.todos[widget.index].task}',
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500
@@ -67,7 +67,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              Todos currentTodo = todoListCubit.state.dataContainer.todos[widget.index];
+              TodoModel currentTodo = todoListCubit.state.todos[widget.index];
               currentTodo.task = editingController.text;
               todoListCubit.updateTodoListState(widget.index, currentTodo);
               Navigator.pop(context);
