@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
+import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
+// import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
 import 'package:flutter_todo_app/model/todo_model.dart';
 
 class TodoDetailScreen extends StatefulWidget {
@@ -26,7 +27,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
+    // final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
+    final TodoListBloc todoListBloc = BlocProvider.of<TodoListBloc>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -47,7 +49,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Current task: ${todoListCubit.state.todos[widget.index].task}',
+              'Current task: ${todoListBloc.state.todos[widget.index].task}',
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500
@@ -67,9 +69,9 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              TodoModel currentTodo = todoListCubit.state.todos[widget.index];
+              TodoModel currentTodo = todoListBloc.state.todos[widget.index];
               currentTodo.task = editingController.text;
-              todoListCubit.updateTodoListState(widget.index, currentTodo);
+              todoListBloc.add(UpdateTodoListEvent(widget.index, currentTodo));
               Navigator.pop(context);
             },
             child: Text("Confirm Edit"),
