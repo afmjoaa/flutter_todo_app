@@ -29,6 +29,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   Widget build(BuildContext context) {
     // final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
     final TodoListBloc todoListBloc = BlocProvider.of<TodoListBloc>(context);
+    final bool isAddNewTodo = widget.index == -1 ? true: false;
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +50,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Current task: ${todoListBloc.state.todos[widget.index].task}',
+              isAddNewTodo? 'Add new task' : 'Current task: ${todoListBloc.state.todos[widget.index].task}',
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500
@@ -61,18 +62,19 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             child: TextField(
               controller: editingController,
               decoration: InputDecoration(
-                labelText: 'Task',
-                hintText: 'Write the updated task here...',
+                labelText: 'Todo',
+                hintText: isAddNewTodo? 'Add new task here...' : 'Write the updated task here...',
                 border: OutlineInputBorder(),
               ),
             ),
           ),
           ElevatedButton(
             onPressed: () {
-              TodoModel currentTodo = todoListBloc.state.todos[widget.index];
-              currentTodo.task = editingController.text;
-              todoListBloc.add(UpdateTodoListEvent(widget.index, currentTodo));
-              Navigator.pop(context);
+              if(isAddNewTodo) {
+                _addTodo(todoListBloc);
+              } else {
+                _updateTodo(todoListBloc, context);
+              }
             },
             child: Text("Confirm Edit"),
             style: ElevatedButton.styleFrom(
@@ -83,6 +85,19 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
         ],
       ),
     );
+  }
+
+  void _updateTodo(TodoListBloc todoListBloc, BuildContext context) {
+    TodoModel currentTodo = todoListBloc.state.todos[widget.index];
+    currentTodo.task = editingController.text;
+    todoListBloc.add(UpdateTodoListEvent(widget.index, currentTodo));
+    Navigator.pop(context);
+  }
+
+  void _addTodo(TodoListBloc todoListBloc) {
+    TodoModel currentTodo = TodoModel(editingController.text, false);
+    todoListBloc.add(AddNewTodoEvent(currentTodo));
+    Navigator.pop(context);
   }
 
   @override

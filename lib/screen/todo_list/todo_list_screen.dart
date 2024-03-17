@@ -92,7 +92,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // todoBloc.add(TodoEvent.add);
+          Navigator.pushNamed(context, TodoDetailScreen.path, arguments: -1);
         },
         child: Icon(Icons.add),
       ),

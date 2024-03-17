@@ -35,4 +35,9 @@ class TodoListCubit extends Cubit<TodoListState> {
     state.todos.removeAt(index);
     emit(TodoListUpdatedState(state.todos));
   }
+
+  void addTask(TodoModel todoModel) {
+    state.todos.add(todoModel);
+    emit(TodoListUpdatedState(state.todos));
+  }
 }

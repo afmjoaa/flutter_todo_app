@@ -37,5 +37,10 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
       state.todos.removeAt(event.index);
       emit(TodoListUpdatedState(state.todos));
     });
+
+    on<AddNewTodoEvent>((event, emit) {
+      state.todos.add(event.todoModel);
+      emit(TodoListUpdatedState(state.todos));
+    });
   }
 }

@@ -15,25 +15,22 @@ abstract class TodoListEvent extends Equatable {
 class UpdateTodoListEvent extends TodoListEvent {
   final int index;
   final TodoModel todoModel;
-  UpdateTodoListEvent(this.index, this.todoModel);
-
-  @override
-  List<Object?> get props => [index, todoModel];
+  UpdateTodoListEvent(this.index, this.todoModel): super([index, todoModel]);
 }
 
 class MarkTodoAsCompleteEvent extends TodoListEvent {
   final int index;
-  MarkTodoAsCompleteEvent(this.index);
-
-  @override
-  List<Object?> get props => [index];
+  MarkTodoAsCompleteEvent(this.index): super([index]);
 }
 
 class DeleteTodoEvent extends TodoListEvent {
   final int index;
-  DeleteTodoEvent(this.index);
+  DeleteTodoEvent(this.index): super([index]);
+}
 
-  @override
-  List<Object?> get props => [index];
+class AddNewTodoEvent extends TodoListEvent {
+  final TodoModel todoModel;
+
+  AddNewTodoEvent(this.todoModel): super([todoModel]);
 }
 
