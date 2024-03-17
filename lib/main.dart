@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
 import 'package:flutter_todo_app/core/app_routes.dart';
+import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
 
 import 'screen/todo_list/todo_list_screen.dart';
 
@@ -15,8 +16,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TodoListBloc(),
-          //TodoListCubit(),
+      create: (context) =>
+          // TodoListBloc(),
+          TodoListCubit(),
       child: MaterialApp(
         title: 'Flutter Todo App',
         debugShowCheckedModeBanner: false,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
-// import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
+import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
+// import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
 import 'package:flutter_todo_app/screen/todo_detail/todo_detail_screen.dart';
 
 class TodoListScreen extends StatefulWidget {
@@ -21,8 +21,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
-    final TodoListBloc todoListBloc = BlocProvider.of<TodoListBloc>(context);
+    final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
+    // final TodoListBloc todoListBloc = BlocProvider.of<TodoListBloc>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple.shade600,
@@ -35,7 +35,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
           bottom: Radius.circular(20),
         )),
       ),
-      body: BlocBuilder<TodoListBloc, TodoListState>(
+      body: BlocBuilder<TodoListCubit, TodoListState>(
         builder: (context, state) {
           return ListView.builder(
             itemCount: state.todos.length,
@@ -60,16 +60,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     state.todos[index].isDone
                         ? IconButton(
                             onPressed: () {
-                              todoListBloc.add(DeleteTodoEvent(index));
-                              // todoListCubit.deleteTask(index);
+                              // todoListBloc.add(DeleteTodoEvent(index));
+                              todoListCubit.deleteTask(index);
                               // _deleteTask(index, state.dataContainer.todos, todoListCubit);
                             },
                             icon: Icon(Icons.delete),
                           )
                         : IconButton(
                             onPressed: () {
-                              todoListBloc.add(MarkTodoAsCompleteEvent(index));
-                              // todoListCubit.markTaskAsComplete(index);
+                              // todoListBloc.add(MarkTodoAsCompleteEvent(index));
+                              todoListCubit.markTaskAsComplete(index);
                             },
                             icon: Icon(Icons.check),
                           ),

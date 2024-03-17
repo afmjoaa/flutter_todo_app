@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
+import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
 // import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
 import 'package:flutter_todo_app/model/todo_model.dart';
 
@@ -27,8 +28,8 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
-    final TodoListBloc todoListBloc = BlocProvider.of<TodoListBloc>(context);
+    final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
+    // final TodoListBloc todoListBloc = BlocProvider.of<TodoListBloc>(context);
     final bool isAddNewTodo = widget.index == -1 ? true: false;
 
     return Scaffold(
@@ -50,7 +51,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              isAddNewTodo? 'Add new task' : 'Current task: ${todoListBloc.state.todos[widget.index].task}',
+              isAddNewTodo? 'Add new task' : 'Current task: ${todoListCubit.state.todos[widget.index].task}',
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500
@@ -71,9 +72,9 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
           ElevatedButton(
             onPressed: () {
               if(isAddNewTodo) {
-                _addTodo(todoListBloc);
+                _addTodo(todoListCubit);
               } else {
-                _updateTodo(todoListBloc, context);
+                _updateTodo(todoListCubit, context);
               }
             },
             child: Text("Confirm Edit"),
@@ -87,16 +88,18 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     );
   }
 
-  void _updateTodo(TodoListBloc todoListBloc, BuildContext context) {
+  void _updateTodo(TodoListCubit todoListBloc, BuildContext context) {
     TodoModel currentTodo = todoListBloc.state.todos[widget.index];
     currentTodo.task = editingController.text;
-    todoListBloc.add(UpdateTodoListEvent(widget.index, currentTodo));
+    todoListBloc.updateTodoListState(widget.index, currentTodo);
+    // todoListBloc.add(UpdateTodoListEvent(widget.index, currentTodo));
     Navigator.pop(context);
   }
 
-  void _addTodo(TodoListBloc todoListBloc) {
+  void _addTodo(TodoListCubit todoListBloc) {
     TodoModel currentTodo = TodoModel(editingController.text, false);
-    todoListBloc.add(AddNewTodoEvent(currentTodo));
+    todoListBloc.addTask(currentTodo);
+    // todoListBloc.add(AddNewTodoEvent(currentTodo));
     Navigator.pop(context);
   }
 
