@@ -1,8 +1,9 @@
 class TodoModel {
   String task;
+  String description;
   bool isDone;
 
-  TodoModel(this.task, this.isDone);
+  TodoModel(this.task, this.isDone, this.description);
 
   @override
   String toString() {

@@ -9,14 +9,14 @@ class TodoListCubit extends Cubit<TodoListState> {
       : super(
           TodoListInitialState(
             [
-              TodoModel('Complete the homework', false),
-              TodoModel('Clean the bedroom', false),
-              TodoModel('Wash the car', false),
-              TodoModel('Do exercise(50 push-up)', false),
-              TodoModel('Take a bath', false),
-              TodoModel('Cut you hair', false),
-              TodoModel('Feed your pet', false),
-              TodoModel('Take your medicine', false),
+              TodoModel('Complete the homework', false, ''),
+              TodoModel('Clean the bedroom', false, ''),
+              TodoModel('Wash the car', false, ''),
+              TodoModel('Do exercise(50 push-up)', false, ''),
+              TodoModel('Take a bath', false, ''),
+              TodoModel('Cut you hair', false, ''),
+              TodoModel('Feed your pet', false, ''),
+              TodoModel('Take your medicine', false, ''),
             ],
           ),
         );

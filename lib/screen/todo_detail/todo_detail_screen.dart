@@ -85,7 +85,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   }
 
   void _addTodo(TodoListCubit todoListBloc) {
-    TodoModel currentTodo = TodoModel(editingController.text, false);
+    TodoModel currentTodo = TodoModel(editingController.text, false, '');
     todoListBloc.addTask(currentTodo);
     // todoListBloc.add(AddNewTodoEvent(currentTodo));
     Navigator.pop(context);
