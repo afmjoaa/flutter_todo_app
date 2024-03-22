@@ -54,6 +54,18 @@ class _TodoOverviewTabState extends State<TodoOverviewTab> {
                         fontWeight: FontWeight.w400),
                   ),
                 ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    state.todos[index].description,
+                    style: TextStyle(
+                        decoration: state.todos[index].isDone
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w200),
+                  ),
+                ),
                 trailing: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   mainAxisSize: MainAxisSize.min,

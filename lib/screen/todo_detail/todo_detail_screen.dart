@@ -16,13 +16,15 @@ class TodoDetailScreen extends StatefulWidget {
 }
 
 class _TodoDetailScreenState extends State<TodoDetailScreen> {
-  late TextEditingController editingController;
+  late TextEditingController titleEditingController;
+  late TextEditingController descEditingController;
 
 
   @override
   void initState() {
     super.initState();
-    editingController = TextEditingController();
+    titleEditingController = TextEditingController();
+    descEditingController = TextEditingController();
   }
 
   @override
@@ -30,70 +32,85 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
     final bool isAddNewTodo = widget.index == -1 ? true: false;
 
+
     return Scaffold(
       appBar: CommonAppBarWidget(
         title: 'Todo detail screen',
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              isAddNewTodo? 'Add new task' : 'Current task: ${todoListCubit.state.todos[widget.index].task}',
+              isAddNewTodo? 'Add new task' : 'Current task: ${todoListCubit.state.todos[widget.index].task} \nDescrition: ${todoListCubit.state.todos[widget.index].description}',
               style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w500
+                  fontWeight: FontWeight.w400
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
-              controller: editingController,
+              controller: titleEditingController,
               decoration: InputDecoration(
-                labelText: 'Todo',
-                hintText: isAddNewTodo? 'Add new task here...' : 'Write the updated task here...',
+                labelText: 'Todo Title',
+                hintText: isAddNewTodo? 'Add new task title here...' : 'Update current task title here...',
                 border: OutlineInputBorder(),
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              if(isAddNewTodo) {
-                _addTodo(todoListCubit);
-              } else {
-                _updateTodo(todoListCubit, context);
-              }
-            },
-            child: Text("Confirm Edit"),
-            style: ElevatedButton.styleFrom(
+
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: descEditingController,
+              decoration: InputDecoration(
+                labelText: 'Todo Description',
+                hintText: isAddNewTodo? 'Add new task description here...' : 'Update current task description here...',
+                border: OutlineInputBorder(),
+              ),
             ),
-          )
+          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: "Confirm",
+        shape: const ContinuousRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32)),
+        ),
+        onPressed: () {
+          if(isAddNewTodo) {
+            _addTodo(todoListCubit);
+          } else {
+            _updateTodo(todoListCubit, context);
+          }
+        },
+        child: const Icon(Icons.check_rounded),
       ),
     );
   }
 
   void _updateTodo(TodoListCubit todoListBloc, BuildContext context) {
     TodoModel currentTodo = todoListBloc.state.todos[widget.index];
-    currentTodo.task = editingController.text;
+    currentTodo.task = titleEditingController.text;
+    currentTodo.description = descEditingController.text;
     todoListBloc.updateTodoListState(widget.index, currentTodo);
-    // todoListBloc.add(UpdateTodoListEvent(widget.index, currentTodo));
     Navigator.pop(context);
   }
 
   void _addTodo(TodoListCubit todoListBloc) {
-    TodoModel currentTodo = TodoModel(editingController.text, false, '');
+    TodoModel currentTodo = TodoModel(titleEditingController.text, false, descEditingController.text);
     todoListBloc.addTask(currentTodo);
-    // todoListBloc.add(AddNewTodoEvent(currentTodo));
     Navigator.pop(context);
   }
 
   @override
   void dispose() {
-    editingController.clear();
+    titleEditingController.clear();
+    descEditingController.clear();
     super.dispose();
   }
 }
