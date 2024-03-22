@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
 import 'package:flutter_todo_app/core/app_routes.dart';
-import 'package:flutter_todo_app/inherited_widget/todo_inherited_widget.dart';
-import 'package:flutter_todo_app/shared/todo_data_container.dart';
-
+// import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
+import 'package:flutter_todo_app/model/todo_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'screen/todo_list/todo_list_screen.dart';
 
 void main() {
@@ -19,7 +20,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final StreamController<List<Todos>> _streamController;
+  late final StreamController<List<TodoModel>> _streamController;
 
   @override
   void initState() {
@@ -29,9 +30,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return TodoInheritedWidget(
-      dataContainer: TodoDataContainer(),
-      todoStreamController: _streamController,
+    return BlocProvider(
+      create: (context) => TodoListBloc(),
       child: MaterialApp(
         title: 'Flutter Todo App',
         debugShowCheckedModeBanner: false,

@@ -1,9 +1,11 @@
-import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_app/inherited_widget/todo_inherited_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
+
+// import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
 import 'package:flutter_todo_app/screen/todo_detail/todo_detail_screen.dart';
-import 'package:flutter_todo_app/shared/todo_data_container.dart';
 
 class TodoListScreen extends StatefulWidget {
   static const String path = '/todo_list';
@@ -21,6 +23,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
     super.initState();
   }
 
+  Color getRandomColor() {
+    Random random = Random();
+    return Color.fromARGB(
+      255,
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,74 +44,77 @@ class _TodoListScreenState extends State<TodoListScreen> {
         ),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(20),
-        )),
+              bottom: Radius.circular(20),
+            )),
       ),
-      body: StreamBuilder<List<Todos>>(
-        stream: TodoInheritedWidget.of(context).todoStreamController.stream,
-        builder: (context, snapshot) {
-          return ListView.builder(
-            itemCount: snapshot.data?.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    snapshot.data![index].task,
-                    style: TextStyle(
-                        decoration: snapshot.data![index].isDone
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400),
-                  ),
-                ),
-                trailing: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (snapshot.data![index].isDone)
-                      IconButton(
-                        onPressed: () {
-                          _deleteTask(index, snapshot.data!);
-                        },
-                        icon: Icon(Icons.delete),
-                      ),
-                    if (!snapshot.data![index].isDone)
-                      IconButton(
-                        onPressed: () {
-                          _markTaskAsComplete(index, snapshot.data!);
-                        },
-                        icon: Icon(Icons.check),
-                      ),
-                    SizedBox(
-                      width: 10,
+      body: BlocListener<TodoListBloc, TodoListState>(
+        listener: (context, state) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text("Todo List Updated"),
+                backgroundColor: getRandomColor(),
+                duration: Duration(milliseconds: 800),
+              ),);
+        },
+        child: BlocBuilder<TodoListBloc, TodoListState>(
+          builder: (context, state) {
+            return ListView.builder(
+              itemCount: state.todos.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      state.todos[index].task,
+                      style: TextStyle(
+                          decoration: state.todos![index].isDone
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, TodoDetailScreen.path, arguments: index);
-                      },
-                      icon: Icon(Icons.edit),
-                    )
-                  ],
-                ),
-              );
-            },
-          );
-        }
+                  ),
+                  trailing: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (state.todos[index].isDone)
+                        IconButton(
+                          onPressed: () {
+                            BlocProvider.of<TodoListBloc>(context).add(
+                                DeleteTodoEvent(index));
+                          },
+                          icon: Icon(Icons.delete),
+                        ),
+                      if (!state.todos[index].isDone)
+                        IconButton(
+                          onPressed: () {
+                            BlocProvider.of<TodoListBloc>(context).add(
+                                MarkTodoAsCompleteEvent(index));
+                          },
+                          icon: Icon(Icons.check),
+                        ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, TodoDetailScreen.path,
+                              arguments: index);
+                        },
+                        icon: Icon(Icons.edit),
+                      )
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
 
-  void _markTaskAsComplete(int index, List<Todos> todos) {
-    todos[index].isDone = true;
-    TodoInheritedWidget.of(context).todoStreamController.sink.add(todos);
-  }
-
-  void _deleteTask(int index, List<Todos> todos) {
-    todos.removeAt(index);
-    TodoInheritedWidget.of(context).todoStreamController.sink.add(todos);
-  }
 
   @override
   void dispose() {
