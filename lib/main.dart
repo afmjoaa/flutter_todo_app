@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
 import 'package:flutter_todo_app/core/app_routes.dart';
 import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
+import 'package:flutter_todo_app/theme/theme_cubit.dart';
 
 import 'screen/todo_list/todo_list_screen.dart';
 
@@ -15,19 +15,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          // TodoListBloc(),
-          TodoListCubit(),
-      child: MaterialApp(
-        title: 'Flutter Todo App',
-        debugShowCheckedModeBanner: false,
-        routes: AppRoutes.configureRoutes(),
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<TodoListCubit>(
+          create: (BuildContext context) => TodoListCubit(),
         ),
-        home: const TodoListScreen(),
+        BlocProvider<ThemeCubit>(
+          create: (BuildContext context) => ThemeCubit(),
+        ),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) {
+          return MaterialApp(
+            title: 'Flutter Todo App',
+            debugShowCheckedModeBanner: false,
+            routes: AppRoutes.configureRoutes(),
+            theme: themeState.themeData,
+            home: const TodoListScreen(),
+          );
+        },
       ),
     );
   }

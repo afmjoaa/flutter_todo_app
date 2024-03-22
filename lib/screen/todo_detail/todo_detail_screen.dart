@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
 import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
-// import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
 import 'package:flutter_todo_app/model/todo_model.dart';
+import 'package:flutter_todo_app/widget/common_appbar_widget.dart';
 
 class TodoDetailScreen extends StatefulWidget {
   static const String path = '/todo_detail';
@@ -29,20 +28,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
-    // final TodoListBloc todoListBloc = BlocProvider.of<TodoListBloc>(context);
     final bool isAddNewTodo = widget.index == -1 ? true: false;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple.shade100,
-        title: const Text(
-          'Todo detail screen',
-          style: TextStyle(color: Colors.black),
-        ),
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(20),
-            )),
+      appBar: CommonAppBarWidget(
+        title: 'Todo detail screen',
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,8 +69,6 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             },
             child: Text("Confirm Edit"),
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple.shade400,
-                foregroundColor: Colors.white
             ),
           )
         ],

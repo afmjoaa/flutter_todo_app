@@ -6,6 +6,7 @@ import 'package:flutter_todo_app/cubit/todo_list_cubit.dart';
 
 // import 'package:flutter_todo_app/bloc/todo_list_bloc.dart';
 import 'package:flutter_todo_app/screen/todo_detail/todo_detail_screen.dart';
+import 'package:flutter_todo_app/widget/common_appbar_widget.dart';
 
 class TodoListScreen extends StatefulWidget {
   static const String path = '/todo_list';
@@ -37,22 +38,14 @@ class _TodoListScreenState extends State<TodoListScreen> {
     final TodoListCubit todoListCubit = BlocProvider.of<TodoListCubit>(context);
     // final TodoListBloc todoListBloc = BlocProvider.of<TodoListBloc>(context);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple.shade600,
-        title: const Text(
-          'Todo list screen',
-          style: TextStyle(color: Colors.white),
-        ),
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(20),
-            )),
+      appBar: CommonAppBarWidget(
+         title: 'Todo list screen',
       ),
       body: BlocListener<TodoListCubit, TodoListState>(
         listener: (context, state) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Todo List Updated'),
-            duration: Duration(milliseconds: 1000),
+            duration: Duration(milliseconds: 2000),
             backgroundColor: getRandomColor(),
           ));
         },
