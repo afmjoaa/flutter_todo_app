@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, state) {
           return Scaffold(
             appBar: CommonAppBarWidget(
-              title: 'Todo list screen',
+              title: state.tab.index == 0? 'Todo list screen': "Todo stat screen",
             ),
             body: IndexedStack(
               index: state.tab.index,

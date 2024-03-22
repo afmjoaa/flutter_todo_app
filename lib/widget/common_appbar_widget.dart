@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo_app/theme/theme_cubit.dart';
 
-class CommonAppBarWidget extends StatelessWidget
-    implements PreferredSizeWidget {
+class CommonAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
 
   const CommonAppBarWidget({super.key, required this.title});
@@ -34,8 +33,8 @@ class CommonAppBarWidget extends StatelessWidget
           ),
         ),
       ],
-      title: const Text(
-        'Todo list screen',
+      title: Text(
+        title,
       ),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
